@@ -1,0 +1,2 @@
+authorizationkey = 'base64 encoded api credentials'
+jiraurl = 'https://companyname.atlassian.net'
