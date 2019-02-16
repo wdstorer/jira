@@ -1,7 +1,7 @@
 # jira
 
 ## release_board.py
-This script will automate the process of creating a version release and adding the resolved issues from a Jira board to the release. 
+This script will automate the process of creating a version release and set it as the Fix Version for resolved issues on the Jira board. 
 
 ```
 $ ./release_board.py -h
