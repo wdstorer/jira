@@ -47,7 +47,7 @@ def httpputrequest(url,payload):
 def getprojectid(projectname):
   response = httpgetrequest(config.jiraurl + "/rest/api/3/project")
   for c in json.loads(response.text):
-    if c['key'] == 'USP':
+    if c['key'] == projectname:
         pid = c['id']
   if pid == '':
     print "pid not found for project name %s" % (projectname)
@@ -68,7 +68,7 @@ def createversion(projectname, versionname, releasedate):
   response = httppostrequest(config.jiraurl + "/rest/api/3/version",payload)
 
 def releaseboard(projectname, versionname, releasedate):
-  createversion("USP", versionname, releasedate)
+  createversion(projectname, versionname, releasedate)
   
   # Get resolved tickets and set fixVersion
   response = httpgetrequest(config.jiraurl + "/rest/agile/latest/board/38/issue?jql=status=resolved%20and%20fixVersion%20is%20empty&fields=id")
