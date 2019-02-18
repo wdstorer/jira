@@ -3,6 +3,8 @@
 ## release_board.py
 This script will automate the process of creating a version release and set it as the Fix Version for resolved issues on the Jira board. 
 
+* This is currently only designed to release boards for single projects. 
+
 ```
 $ ./release_board.py -h
 usage: release_board.py [-h] projectname [versionname] [releasedate]
