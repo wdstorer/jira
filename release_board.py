@@ -55,6 +55,17 @@ def getprojectid(projectname):
   else:
     return pid
 
+def getboardid(projectname):
+  bid = ""
+  response = httpgetrequest(config.jiraurl + "/rest/agile/latest/board?projectKeyOrId=" + projectname)
+  for c in json.loads(response.text)['values']:
+    bid = c['id']
+  if bid == '':
+    print "No board found for project name %s" % (projectname)
+    sys.exit()
+  else:
+    return bid
+
 def createversion(projectname, versionname, releasedate):
   pid = getprojectid(projectname)
   payload = json.dumps( {
@@ -70,8 +81,10 @@ def createversion(projectname, versionname, releasedate):
 def releaseboard(projectname, versionname, releasedate):
   createversion(projectname, versionname, releasedate)
   
+  boardid = getboardid(projectname)
+
   # Get resolved tickets and set fixVersion
-  response = httpgetrequest(config.jiraurl + "/rest/agile/latest/board/38/issue?jql=status=resolved%20and%20fixVersion%20is%20empty&fields=id")
+  response = httpgetrequest(config.jiraurl + "/rest/agile/latest/board/" + str(boardid) + "/issue?jql=status=resolved%20and%20fixVersion%20is%20empty&fields=id")
   issues = []
   for c in json.loads(response.text)['issues']:
     issues.append(c['key'])
