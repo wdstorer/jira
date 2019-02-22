@@ -5,6 +5,9 @@ import sys
 import datetime
 import config
 import argparse
+import socket
+import getpass
+import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument("projectname", type=str, help="Jira project name", default="huh")
@@ -103,6 +106,11 @@ def notifyslack(channel, message):
     "channel": "#" + channel, 
     "username": "Jira board bot", 
     "text": message, 
+    "attachments": [ {
+      "fallback": "",
+      "footer": os.path.basename(__file__) + " run by " + getpass.getuser() + " on " + socket.gethostname(),
+      "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png"
+    } ],
     "icon_emoji": ":card_index:"
   } )
   
@@ -117,5 +125,5 @@ resolvedissues = 0
 resolvedissues = releaseboard(project,versionname,releasedate)
 
 if args.slackchannel is not None and resolvedissues > 0:
-  notifyslack(args.slackchannel, "Jira board relased - " + str(resolvedissues) + " resolved issues added to version " + versionname)
+  notifyslack(args.slackchannel, str(resolvedissues) + " resolved issues released with version " + versionname)
 
