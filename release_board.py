@@ -10,6 +10,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("projectname", type=str, help="Jira project name", default="huh")
 parser.add_argument("versionname", nargs='?', type=str, help="Version (Defaults to current date yyyy-mm-dd)", default=datetime.datetime.today().strftime('%Y-%m-%d'))
 parser.add_argument("releasedate", nargs='?', type=str, help="Date of release (Defaults to current date yyyy-mm-dd)", default=datetime.datetime.today().strftime('%Y-%m-%d'))
+parser.add_argument("--slackchannel", help="specify the slack channel to notify about the board release")
 args = parser.parse_args()
 
 headers = {
@@ -95,8 +96,26 @@ def releaseboard(projectname, versionname, releasedate):
     } )
     response = httpputrequest(config.jiraurl + "/rest/api/3/issue/" + issue, payload)
 
+  return len(issues)
+
+def notifyslack(channel, message):
+  payload=json.dumps( {
+    "channel": "#" + channel, 
+    "username": "Jira board bot", 
+    "text": message, 
+    "icon_emoji": ":card_index:"
+  } )
+  
+  response = httppostrequest(config.slackwebhook, payload)
+
+
 project = args.projectname
 versionname = args.versionname
 releasedate = args.releasedate
+resolvedissues = 0
 
-releaseboard(project,versionname,releasedate)
+resolvedissues = releaseboard(project,versionname,releasedate)
+
+if args.slackchannel is not None and resolvedissues > 0:
+  notifyslack(args.slackchannel, "Jira board relased - " + str(resolvedissues) + " resolved issues added to version " + versionname)
+
