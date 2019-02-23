@@ -125,5 +125,5 @@ resolvedissues = 0
 resolvedissues = releaseboard(project,versionname,releasedate)
 
 if args.slackchannel is not None and resolvedissues > 0:
-  notifyslack(args.slackchannel, str(resolvedissues) + " resolved issues released with version " + versionname)
+  notifyslack(args.slackchannel, str(resolvedissues) + " resolved issues released with version " + "<" + config.jiraurl + "/issues/?jql=project%20%3D%20%22" + project + "%22%20AND%20fixVersion%20%3D%20%22" + versionname + "%22|" + versionname + ">")
 
